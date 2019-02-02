@@ -6,11 +6,12 @@ const fs = require('fs');
 const config = require('./config.json');
 
 const apiKey = process.env.AIRTABLE_API_KEY;
+const baseKey = process.env.BASE_KEY;
 const targetTable = process.env.TARGET_TABLE;
-const projectDir = process.env.FILES_PATH;
+const iOSProjectDir = process.env.IOS_FILES_PATH;
 
 const getRecords = async (tableName, fields) => {
-    const baseUrl = `${config.baseUrl}${encodeURIComponent(tableName)}`;
+    const baseUrl = `${config.baseUrl}${baseKey}/${encodeURIComponent(tableName)}`;
 
     let previousOffset;
     let results = [];
@@ -43,11 +44,6 @@ const transform = async () => {
             const result = records.reduce((acc, cur) => {
                 const path = cur.key;
                 let value = cur[columnName] || '';
-                // if (value.startsWith('http://') || value.startsWith('https://')) {
-                //     value = value.trim();
-                // } else {
-                //     value = value.split('//')[0].trim();
-                // }
 
                 if (!path) {
                     return acc.concat('\n');
@@ -74,8 +70,15 @@ const transform = async () => {
 const writeToFiles = async () => {
     const translation = await transform();
     translation.forEach(({ language, targetTable, result }) => {
-        const dir = `${projectDir}/${language}.lproj`;
-        const file = decodeURIComponent(`${dir}/Localizable.strings`);
+        var dir = '';
+        var file = '';
+
+        if (targetTable === 'iOS') {
+            dir = `${iOSProjectDir}/${language}.lproj`;
+            file = decodeURIComponent(`${dir}/Localizable.strings`);
+        } else {
+            return;
+        }
 
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);

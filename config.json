@@ -1,7 +1,7 @@
 {
-    "baseUrl": "https://api.airtable.com/v0/app3PNTWQGCntNF7Z/",
+    "baseUrl": "https://api.airtable.com/v0/",
     "tables": {
-        "iOS": "Translation (iOS)"
+        "iOS": "Localization (iOS)"
     },
     "languages": {
         "en": "English",
