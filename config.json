@@ -4,7 +4,11 @@
         "iOS": "Translation (iOS)"
     },
     "languages": {
-        "en": "English (en)",
-        "zh-Hant": "Trad. Chinese (zh-Hant)"
+        "en": "English",
+        "zh-Hant": "Chinese (Trad)",
+        "zh-Hans": "Chinese (Simp)",
+        "de": "German",
+        "fr": "French",
+        "ru": "Russian"
     }
 }
