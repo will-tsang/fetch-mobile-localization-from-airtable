@@ -1,0 +1,10 @@
+{
+    "baseUrl": "https://api.airtable.com/v0/app3PNTWQGCntNF7Z/",
+    "tables": {
+        "iOS": "Translation (iOS)"
+    },
+    "languages": {
+        "en": "English (en)",
+        "zh-Hant": "Trad. Chinese (zh-Hant)"
+    }
+}
