@@ -74,6 +74,10 @@ const writeToFiles = async () => {
         var file = '';
 
         if (targetTable === 'iOS') {
+            if (!iOSProjectDir) {
+                return;
+            }
+            
             dir = `${iOSProjectDir}/${language}.lproj`;
             file = decodeURIComponent(`${dir}/Localizable.strings`);
         } else {
