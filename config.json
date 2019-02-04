@@ -9,6 +9,8 @@
         "zh-Hans": "Chinese (Simp)",
         "de": "German",
         "fr": "French",
-        "ru": "Russian"
+        "ru": "Russian",
+        "es": "Spanish",
+        "es-419": "Spanish" 
     }
 }
