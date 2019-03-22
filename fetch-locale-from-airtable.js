@@ -35,7 +35,7 @@ const getRecords = async (tableName, fields) => {
 const transformAndroid = async () => {
     const tableName = config.platform[targetPlatform].table;
     const { languages } = config.platform[targetPlatform];
-    const fields = Object.values(config.languages).concat('key');
+    const fields = Object.values(languages).concat('key');
     const records = await getRecords(tableName, fields);
 
     return Object.entries(languages)
@@ -66,7 +66,7 @@ const transformAndroid = async () => {
 const transformIOS = async () => {
     const tableName = config.platform[targetPlatform].table;
     const { languages } = config.platform[targetPlatform];
-    const fields = Object.values(config.languages).concat('key');
+    const fields = Object.values(languages).concat('key');
     const records = await getRecords(tableName, fields);
 
     return Object.entries(languages)

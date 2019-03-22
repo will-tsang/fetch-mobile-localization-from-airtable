@@ -21,12 +21,5 @@
                 "values-zh-rTW": "Chinese (Trad)"
             }
         }
-    },
-    "tables": {
-        "iOS": "Localization (iOS)"
-    },
-    "languages": {
-        "en": "English",
-        "zh-Hant": "Chinese (Trad)"
     }
 }
