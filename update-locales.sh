@@ -4,6 +4,7 @@
 
 echo "Fetch Locales..."
 yarn fetch-translation:ios
+yarn fetch-translation:watch
 
 set +a
 

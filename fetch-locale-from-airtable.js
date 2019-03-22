@@ -7,8 +7,7 @@ const config = require('./config.json');
 
 const apiKey = process.env.AIRTABLE_API_KEY;
 const baseKey = process.env.BASE_KEY;
-const targetTable = process.env.TARGET_TABLE;
-const iOSProjectDir = process.env.IOS_FILES_PATH;
+const targetPlatform = process.env.TARGET_PLATFORM;
 
 const getRecords = async (tableName, fields) => {
     const baseUrl = `${config.baseUrl}${baseKey}/${encodeURIComponent(tableName)}`;
@@ -33,9 +32,40 @@ const getRecords = async (tableName, fields) => {
     return results.map(result => result.fields);
 }
 
-const transform = async () => {
-    const tableName = config.tables[targetTable];
-    const { languages } = config;
+const transformAndroid = async () => {
+    const tableName = config.platform[targetPlatform].table;
+    const { languages } = config.platform[targetPlatform];
+    const fields = Object.values(config.languages).concat('key');
+    const records = await getRecords(tableName, fields);
+
+    return Object.entries(languages)
+        .map(([language, columnName]) => {
+            const result = records.reduce((acc, cur) => {
+
+                const path = cur.key;
+                let value = cur[columnName] || '';
+
+                if (!path) {
+                    return acc.concat('\n');
+                }
+                if (path.startsWith('<!--') && path.endsWith('-->')) {
+                    return acc.concat('    ', path, '\n');
+                } else {
+                    return acc.concat('    <string name="', path, '">', value, '</string>', '\n');
+                }
+            }, '<resources>\n').concat('</resources>\n');
+
+            return {
+                language,
+                result,
+            };
+        });
+}
+
+
+const transformIOS = async () => {
+    const tableName = config.platform[targetPlatform].table;
+    const { languages } = config.platform[targetPlatform];
     const fields = Object.values(config.languages).concat('key');
     const records = await getRecords(tableName, fields);
 
@@ -51,47 +81,51 @@ const transform = async () => {
                 if (path.startsWith('//') || (path.startsWith('/*') && path.endsWith('*/'))) {
                     return acc.concat(path, '\n');
                 } else {
-                    if(targetTable === 'iOS') {
-                        return acc.concat('"', path, '"="', value, '";', '\n');
-                    } else {
-                        return acc;
-                    }
+                    return acc.concat('"', path, '"="', value, '";', '\n');
                 }
             }, `/* ${columnName} */\n`);
 
             return {
                 language,
                 result,
-                targetTable,
             };
         });
 }
 
 const writeToFiles = async () => {
-    const translation = await transform();
-    translation.forEach(({ language, targetTable, result }) => {
-        var dir = '';
-        var file = '';
+    if(targetPlatform === 'iOS') {
+        const translation = await transformIOS();
+        const targetPath = process.env.FILES_PATH;
 
-        if (targetTable === 'iOS') {
-            if (!iOSProjectDir) {
-                return;
+        translation.forEach(({ language, result }) => {
+            const dir = `${targetPath}/${language}.lproj`;
+            const file = decodeURIComponent(`${dir}/Localizable.strings`);
+
+            if (!fs.existsSync(dir)){
+                fs.mkdirSync(dir);
             }
-            
-            dir = `${iOSProjectDir}/${language}.lproj`;
-            file = decodeURIComponent(`${dir}/Localizable.strings`);
-        } else {
-            return;
-        }
-
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir);
-        }
-        fs.writeFile(file, result, (err) => {
-            if (err) throw err;
-            console.log(`${file} updated`);
+            fs.writeFile(file, result, (err) => {
+                if (err) throw err;
+                console.log(`${file} updated`);
+            });
         });
-    });
+    } else if (targetPlatform === 'watch') {
+        const translation = await transformAndroid();
+        const targetPath = process.env.WATCH_FILES_PATH;
+
+        translation.forEach(({ language, result }) => {
+            const dir = `${targetPath}/${language}`;
+            const file = `${dir}/strings.xml`;
+
+            if (!fs.existsSync(dir)){
+                fs.mkdirSync(dir);
+            }
+            fs.writeFile(file, result, (err) => {
+                if (err) throw err;
+                console.log(`${file} updated`);
+            });
+        });
+    }
 }
 
 writeToFiles();

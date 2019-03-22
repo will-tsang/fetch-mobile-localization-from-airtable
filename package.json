@@ -1,7 +1,7 @@
 {
   "name": "translations",
   "version": "1.0.0",
-  "description": "Helper scripts to fetch iOS Localization from Airtable",
+  "description": "Helper scripts to fetch translation from Airtable",
   "main": "index.js",
   "author": "Will Tsang",
   "license": "MIT",
@@ -10,6 +10,7 @@
     "axios": "^0.18.0"
   },
   "scripts": {
-    "fetch-translation:ios": "TARGET_TABLE=iOS ./fetch-locale-from-airtable.js"
+    "fetch-translation:ios": "TARGET_PLATFORM=iOS ./fetch-locale-from-airtable.js",
+    "fetch-translation:watch": "TARGET_PLATFORM=watch ./fetch-locale-from-airtable.js"
   }
 }

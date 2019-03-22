@@ -1,16 +1,32 @@
 {
     "baseUrl": "https://api.airtable.com/v0/",
+    "platform": {
+        "iOS": {
+            "table": "Localization (iOS)",
+            "languages": {
+                "en": "English",
+                "zh-Hant": "Chinese (Trad)",
+                "zh-Hans": "Chinese (Simp)",
+                "de": "German",
+                "fr": "French",
+                "ru": "Russian",
+                "es": "Spanish",
+                "es-419": "Spanish"
+            }
+        },
+        "watch": {
+            "table": "Localization (watch)",
+            "languages": {
+                "values": "English",
+                "values-zh-rTW": "Chinese (Trad)"
+            }
+        }
+    },
     "tables": {
         "iOS": "Localization (iOS)"
     },
     "languages": {
         "en": "English",
-        "zh-Hant": "Chinese (Trad)",
-        "zh-Hans": "Chinese (Simp)",
-        "de": "German",
-        "fr": "French",
-        "ru": "Russian",
-        "es": "Spanish",
-        "es-419": "Spanish" 
+        "zh-Hant": "Chinese (Trad)"
     }
 }
