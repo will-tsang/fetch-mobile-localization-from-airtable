@@ -50,9 +50,12 @@ const transformAndroid = async () => {
                 }
                 if (path.startsWith('<!--') && path.endsWith('-->')) {
                     return acc.concat('    ', path, '\n');
-                } else {
-                    return acc.concat('    <string name="', path, '">', value, '</string>', '\n');
                 }
+                if (!value) {
+                    return acc;
+                }
+                    
+                return acc.concat('    <string name="', path, '">', value, '</string>', '\n');
             }, '<resources>\n').concat('</resources>\n');
 
             return {
@@ -73,16 +76,19 @@ const transformIOS = async () => {
         .map(([language, columnName]) => {
             const result = records.reduce((acc, cur) => {
                 const path = cur.key;
-                let value = cur[columnName] || '';
+                let value = cur[columnName];
 
                 if (!path) {
                     return acc.concat('\n');
                 }
                 if (path.startsWith('//') || (path.startsWith('/*') && path.endsWith('*/'))) {
                     return acc.concat(path, '\n');
-                } else {
-                    return acc.concat('"', path, '"="', value, '";', '\n');
                 }
+                if (!value) {
+                    return acc;
+                } 
+                    
+                return acc.concat('"', path, '"="', value, '";', '\n');
             }, `/* ${columnName} */\n`);
 
             return {
