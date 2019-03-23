@@ -101,7 +101,7 @@ const transformIOS = async () => {
 const writeToFiles = async () => {
     if(targetPlatform === 'iOS') {
         const translation = await transformIOS();
-        const targetPath = process.env.FILES_PATH;
+        const targetPath = process.env.IOS_FILES_PATH;
 
         translation.forEach(({ language, result }) => {
             const dir = `${targetPath}/${language}.lproj`;
