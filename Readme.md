@@ -14,6 +14,7 @@
     cp .env.dist .env
     # fill in the env variables
     # Find Airtable Api Key in https://airtable.com/account
+    # Find Base Key from the target base API document
     ```
 
 ## Run script
