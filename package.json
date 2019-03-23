@@ -11,6 +11,7 @@
   },
   "scripts": {
     "fetch-translation:ios": "TARGET_PLATFORM=iOS ./fetch-locale-from-airtable.js",
-    "fetch-translation:watch": "TARGET_PLATFORM=watch ./fetch-locale-from-airtable.js"
+    "fetch-translation:watch": "TARGET_PLATFORM=watch ./fetch-locale-from-airtable.js",
+    "fetch-translation:android": "TARGET_PLATFORM=android ./fetch-locale-from-airtable.js"
   }
 }

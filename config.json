@@ -14,6 +14,10 @@
                 "es-419": "Spanish"
             }
         },
+        "android": {
+            "table": "Localization (android)",
+            "languages": {}
+        },
         "watch": {
             "table": "Localization (watch)",
             "languages": {

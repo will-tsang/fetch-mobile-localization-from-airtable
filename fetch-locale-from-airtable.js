@@ -115,9 +115,11 @@ const writeToFiles = async () => {
                 console.log(`${file} updated`);
             });
         });
-    } else if (targetPlatform === 'watch') {
+    } else if (targetPlatform === 'watch' || targetPlatform === 'android') {
         const translation = await transformAndroid();
-        const targetPath = process.env.WATCH_FILES_PATH;
+        const targetPath = targetPlatform === 'watch' 
+            ? process.env.WATCH_FILES_PATH
+            : process.env.ANDROID_FILES_PATH
 
         translation.forEach(({ language, result }) => {
             const dir = `${targetPath}/${language}`;
