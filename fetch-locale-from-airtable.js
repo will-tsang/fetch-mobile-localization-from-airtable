@@ -43,7 +43,7 @@ const transformAndroid = async () => {
             const result = records.reduce((acc, cur) => {
 
                 const path = cur.key;
-                let value = cur[columnName] || '';
+                let value = cur[columnName];
 
                 if (!path) {
                     return acc.concat('\n');
