@@ -2,12 +2,13 @@
 
 const axios = require('axios');
 const fs = require('fs');
+const os = require('os')
 
 const config = require('./config.json');
 
 const apiKey = process.env.AIRTABLE_API_KEY;
 const baseKey = process.env.BASE_KEY;
-const targetPlatform = process.env.TARGET_PLATFORM;
+const project = process.env.PROJECT;
 
 const getRecords = async (tableName, fields) => {
     const baseUrl = `${config.baseUrl}${baseKey}/${encodeURIComponent(tableName)}`;
@@ -33,8 +34,7 @@ const getRecords = async (tableName, fields) => {
 }
 
 const transformAndroid = async () => {
-    const tableName = config.platform[targetPlatform].table;
-    const { languages } = config.platform[targetPlatform];
+    const { languages, table: tableName } = config.projects[project];
     const fields = Object.values(languages).concat('key');
     const records = await getRecords(tableName, fields);
 
@@ -67,8 +67,7 @@ const transformAndroid = async () => {
 
 
 const transformIOS = async () => {
-    const tableName = config.platform[targetPlatform].table;
-    const { languages } = config.platform[targetPlatform];
+    const { languages, table: tableName } = config.projects[project];
     const fields = Object.values(languages).concat('key');
     const records = await getRecords(tableName, fields);
 
@@ -98,42 +97,44 @@ const transformIOS = async () => {
         });
 }
 
-const writeToFiles = async () => {
-    if(targetPlatform === 'iOS') {
-        const translation = await transformIOS();
-        const targetPath = process.env.IOS_FILES_PATH;
+const fetchLocale = async () => {
+    const { platform, localPath } = config.projects[project];
+    const targetPath = os.homedir().concat(localPath);
 
-        translation.forEach(({ language, result }) => {
-            const dir = `${targetPath}/${language}.lproj`;
-            const file = decodeURIComponent(`${dir}/Localizable.strings`);
+    switch(platform) {
+        case 'iOS': {
+            const translation = await transformIOS();
+            translation.forEach(({ language, result }) => {
+                const dir = `${targetPath}/${language}.lproj`;
+                const file = `${dir}/Localizable.strings`;
 
-            if (!fs.existsSync(dir)){
-                fs.mkdirSync(dir);
-            }
-            fs.writeFile(file, result, (err) => {
-                if (err) throw err;
-                console.log(`${file} updated`);
+                writeToFiles(dir, file, result);
             });
-        });
-    } else if (targetPlatform === 'watch' || targetPlatform === 'android') {
-        const translation = await transformAndroid();
-        const targetPath = targetPlatform === 'watch' 
-            ? process.env.WATCH_FILES_PATH
-            : process.env.ANDROID_FILES_PATH
+            break;
+        }
+        
+        case 'Android': {
+            const translation = await transformAndroid();
+            translation.forEach(({ language, result }) => {
+                const dir = `${targetPath}/${language}`;
+                const file = `${dir}/strings.xml`;
 
-        translation.forEach(({ language, result }) => {
-            const dir = `${targetPath}/${language}`;
-            const file = `${dir}/strings.xml`;
-
-            if (!fs.existsSync(dir)){
-                fs.mkdirSync(dir);
-            }
-            fs.writeFile(file, result, (err) => {
-                if (err) throw err;
-                console.log(`${file} updated`);
+                writeToFiles(dir, file, result);
             });
-        });
+            break;
+        }
     }
 }
 
-writeToFiles();
+const writeToFiles = async (dir, file, result) => {
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+
+    fs.writeFile(file, result, (err) => {
+        if (err) throw err;
+        console.log(`${file} updated`);
+    });
+}
+
+fetchLocale();
