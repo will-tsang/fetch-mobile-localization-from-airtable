@@ -1,4 +1,4 @@
-# Helper script to convert csv to i18n locale file
+# Helper script to convert csv to iOS and Android locale file
 
 ## Setup
 
