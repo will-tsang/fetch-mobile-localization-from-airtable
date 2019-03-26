@@ -87,7 +87,7 @@ const transformIOS = async () => {
                     return acc;
                 } 
                     
-                return acc.concat('"', path, '"="', value, '";', '\n');
+                return acc.concat(JSON.stringify(path), '=', JSON.stringify(value), ';', '\n');
             }, `/* ${columnName} */\n`);
 
             return {
