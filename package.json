@@ -11,6 +11,6 @@
   },
   "scripts": {
     "fetch-translation:ios": "PROJECT=iOS ./fetch-locale-from-airtable.js",
-    "fetch-translation:watch": "PROJECT=watch ./fetch-locale-from-airtable.js"
+    "fetch-translation:android": "PROJECT=android ./fetch-locale-from-airtable.js"
   }
 }

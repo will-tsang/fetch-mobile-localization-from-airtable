@@ -41,7 +41,6 @@ const transformAndroid = async () => {
     return Object.entries(languages)
         .map(([language, columnName]) => {
             const result = records.reduce((acc, cur) => {
-
                 const path = cur.key;
                 let value = cur[columnName];
 
@@ -52,11 +51,11 @@ const transformAndroid = async () => {
                     return acc.concat('    ', path, '\n');
                 }
                 if (!value) {
-                    return acc;
+                    return acc.concat('\n');
                 }
                     
-                return acc.concat('    <string name="', path, '">', value, '</string>', '\n');
-            }, '<resources>\n').concat('</resources>\n');
+                return acc.concat('    <string name=', JSON.stringify(path), '>', JSON.stringify(value, ), '</string>', '\n');
+            }, '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n').concat('</resources>\n');
 
             return {
                 language,
@@ -64,7 +63,6 @@ const transformAndroid = async () => {
             };
         });
 }
-
 
 const transformIOS = async () => {
     const { languages, table: tableName } = config.projects[project];
